@@ -63,6 +63,12 @@
                   <li>5% on Highest Category</li>
                 </ul>
               `;
+              const WF = `
+                <ul>
+                  <li>2% on Everything</li>
+                <ul>
+              `;
+
               resultElement.innerHTML = `
                 <hr>
                 <h2>Discover ($500/month)</h2>
@@ -80,6 +86,9 @@
                 <hr>
                 <h2>Citi Bank ($500/month)</h2>
                 ${citi}
+                <hr>
+                <h2>Wells Fargo (Unlimited)</h2>
+                ${WF}
               `;
             } else {
               resultElement.textContent = "Elements not found.";
