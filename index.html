@@ -1,0 +1,139 @@
+<html><head>
+  <title>Cashback Dashboard - Discover &amp; Chase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: bold;    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+
+    .highlight {
+      background-color: yellow;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      Promise.all([
+        fetch("https://www.cnbc.com/select/discover-cash-back-calendar/").then(response => response.text()),
+        fetch("https://www.cnbc.com/select/chase-freedom-cash-back-calendar/").then(response => response.text())
+      ])
+        .then(([discoverData, chaseData]) => {
+          const parser = new DOMParser();
+          const discoverDoc = parser.parseFromString(discoverData, "text/html");
+          const chaseDoc = parser.parseFromString(chaseData, "text/html");
+
+          const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(9) > ul');
+          const chaseElement = chaseDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(4) > ul');
+
+          const resultElement = document.getElementById("result");
+
+          if (discoverElement && chaseElement) {
+            highlightCurrentMonth(discoverElement);
+            highlightCurrentMonth(chaseElement);
+
+            const Chase_additional = `
+              <ul>
+                <li>5% on Travel</li>
+                <li>3% on Dining and Delivery</li>
+              </ul>
+            `;
+            const Apple = `
+              <ul>
+                <li>3% on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats</li>
+                <li>2% on Apple Pay</li>
+              </ul>
+            `;
+            const BOA = `
+              <ul>
+                <li>3% on Gas</li>
+                <li>2% on Grocery and Wholesale Clubs</li>
+              </ul>
+            `;
+
+            resultElement.innerHTML = `
+              <hr>
+              <h2>Discover</h2>
+              ${discoverElement.outerHTML}
+              <hr>
+              <h2>Chase</h2>
+              ${chaseElement.outerHTML}
+              ${Chase_additional}
+              <hr>
+              <h2>Apple</h2>
+              ${Apple}
+              <hr>
+              <h2>Bank of America</h2>
+              ${BOA}
+            `;
+          } else {
+            resultElement.textContent = "Elements not found.";
+          }
+        })
+        .catch(error => {
+          document.getElementById("result").textContent = "Error fetching the webpages: " + error;
+        });
+    });
+
+    function highlightCurrentMonth(element) {
+      const currentDate = new Date();
+      const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+      const listItems = element.getElementsByTagName("li");
+
+      for (let i = 0; i < listItems.length; i++) {
+        const listItem = listItems[i];
+        const listItemText = listItem.textContent || listItem.innerText;
+
+        if (listItemText.includes(currentMonth)) {
+          listItem.classList.add("highlight");
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Cashback Dashboard</h1>
+  <div id="result">
+              <hr>
+              <h2>Discover</h2>
+              <ul><li><strong>January to March </strong>(closed): Grocery stores, drug stores and select streaming services (excludes Walmart and Target purchases)</li><li class="highlight"><strong>April to June</strong>: Restaurants and wholesale clubs</li><li><strong>July to September (</strong><a href="https://www.discover.com/credit-cards/cashback-bonus/cashback-calendar.html" target="_blank"><strong>activate now</strong></a><strong>): </strong>Gas stations and digital wallets (Apple Pay, Samsung Pay, Garmin Pay and in-store with Google Pay)</li><li><strong>October to December</strong>: Announcing on September 1</li></ul>
+              <hr>
+              <h2>Chase</h2>
+              <ul><li><strong>January to March </strong>(closed): Grocery stores (excludes Walmart), Target and fitness clubs and gym memberships</li><li class="highlight"><strong>April to June </strong>(closed): <a href="https://www.amazon.com/amazonprime?tag=cnbc013-20" rel="nofollow" target="_blank">Amazon.com</a> and Lowe's</li><li><strong>July to September</strong> (<a href="https://www.chasebonus.com/" target="_blank">activate now</a>): select live entertainment (i.e. concerts, professional sporting events, museums and amusement parks, gas stations and EV charging</li><li><strong>October to December</strong>: Announcing on Sept. 15</li></ul>
+              
+              <ul>
+                <li>5% on Travel</li>
+                <li>3% on Dining and Delivery</li>
+              </ul>
+            
+              <hr>
+              <h2>Apple</h2>
+              
+              <ul>
+                <li>3% on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats</li>
+                <li>2% on Apple Pay</li>
+              </ul>
+            
+              <hr>
+              <h2>Bank of America</h2>
+              
+              <ul>
+                <li>3% on Gas</li>
+                <li>2% on Grocery and Wholesale Clubs</li>
+              </ul>
+            
+            </div>
+
+
+</body></html>
