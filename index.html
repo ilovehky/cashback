@@ -31,7 +31,7 @@
             const discoverDoc = parser.parseFromString(discoverData, "text/html");
             const chaseDoc = parser.parseFromString(chaseData, "text/html");
       
-            const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(9) > ul');
+            const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(8) > ul');
             const chaseElement = chaseDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(4) > ul');
       
             const resultElement = document.getElementById("result");
@@ -61,6 +61,12 @@
               const citi = `
                 <ul>
                   <li>5% on Highest Category</li>
+                  Other travel: trip.com
+                </ul>
+              `;
+              const HEB = `
+                <ul>
+                  <li>1.5% on Everything</li>
                 </ul>
               `;
               const WF = `
@@ -68,7 +74,7 @@
                   <li>2% on Everything</li>
                 <ul>
               `;
-
+      
               resultElement.innerHTML = `
                 <hr>
                 <h2>Discover ($500/month)</h2>
@@ -86,6 +92,9 @@
                 <hr>
                 <h2>Citi Bank ($500/month)</h2>
                 ${citi}
+                <hr>
+                <h2>HEB (Unlimited)</h2>
+                ${HEB}
                 <hr>
                 <h2>Wells Fargo (Unlimited)</h2>
                 ${WF}
