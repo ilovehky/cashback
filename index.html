@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Cashback Dashboard - Discover &amp; Chase</title>
+    <title>Cashback Dashboard</title>
     <style>
       body {
       font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
               highlightCurrentMonth(discoverElement);
               highlightCurrentMonth(chaseElement);
       
-              const Chase_additional = `
+              const Chase = `
                 <ul>
                   <li>5% on Travel</li>
                   <li>3% on Dining and Delivery</li>
@@ -61,7 +61,6 @@
               const citi = `
                 <ul>
                   <li>5% on Highest Category</li>
-                  Other travel: trip.com
                 </ul>
               `;
               const HEB = `
@@ -72,9 +71,16 @@
               const WF = `
                 <ul>
                   <li>2% on Everything</li>
-                <ul>
+                </ul>
               `;
-      
+              const Bilt = `
+                <ul>
+                  <li>6% (3.3%|7.5%) on Dining</li>
+                  <li>4% (2.2%|5%) on Travel</li>
+                  <li>1% (0.55%|1.25%) on Rent</li>
+                  Points redeemed on (cashback|travel)
+                </ul>
+              `;
               resultElement.innerHTML = `
                 <hr>
                 <h2>Discover ($500/month)</h2>
@@ -82,7 +88,7 @@
                 <hr>
                 <h2>Chase ($500/month)</h2>
                 ${chaseElement.outerHTML}
-                ${Chase_additional}
+                ${Chase}
                 <hr>
                 <h2>Apple (Unlimited)</h2>
                 ${Apple}
@@ -98,6 +104,9 @@
                 <hr>
                 <h2>Wells Fargo (Unlimited)</h2>
                 ${WF}
+                <hr>
+                <h2>Bilt ($550|$1250/$year)</h2>
+                ${Bilt}
               `;
             } else {
               resultElement.textContent = "Elements not found.";
@@ -116,9 +125,25 @@
         for (let i = 0; i < listItems.length; i++) {
           const listItem = listItems[i];
           const listItemText = listItem.textContent || listItem.innerText;
-      
-          if (listItemText.includes(currentMonth)) {
-            listItem.classList.add("highlight");
+          if (listItemText.includes("January")) {
+            if ((currentMonth == "January") || (currentMonth == "February") || (currentMonth == "March")) {
+              listItem.classList.add("highlight");
+            }
+          }
+          if (listItemText.includes("April")) {
+            if ((currentMonth == "April") || (currentMonth == "May") || (currentMonth == "June")) {
+              listItem.classList.add("highlight");
+            }
+          }
+          if (listItemText.includes("July")) {
+            if ((currentMonth == "July") || (currentMonth == "August") || (currentMonth == "September")) {
+              listItem.classList.add("highlight");
+            }
+          }
+          if (listItemText.includes("October")) {
+            if ((currentMonth == "October") || (currentMonth == "November") || (currentMonth == "December")) {
+              listItem.classList.add("highlight");
+            }
           }
         }
       }
