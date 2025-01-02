@@ -3,21 +3,22 @@
     <title>Cashback Dashboard</title>
     <style>
       body {
-      font-family: Arial, sans-serif;
+        font-family: Arial, sans-serif;
       }
       h1 {
-      font-size: 30px;
-      font-weight: bold;
+        font-size: 30px;
+        font-weight: bold;
       }
       h2 {
-      font-size: 20px;
-      font-weight: bold;    }
+        font-size: 20px;
+        font-weight: bold;
+      }
       ul {
-      list-style-type: disc;
-      padding-left: 20px;
+        list-style-type: disc;
+        padding-left: 20px;
       }
       .highlight {
-      background-color: yellow;
+        background-color: yellow;
       }
     </style>
     <script>
@@ -27,86 +28,89 @@
           fetch("https://www.cnbc.com/select/chase-freedom-cash-back-calendar/").then(response => response.text())
         ])
           .then(([discoverData, chaseData]) => {
+
             const parser = new DOMParser();
             const discoverDoc = parser.parseFromString(discoverData, "text/html");
             const chaseDoc = parser.parseFromString(chaseData, "text/html");
-      
-            const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(8) > ul');
-            const chaseElement = chaseDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(4) > ul');
-      
+            const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(10) > ul');
+            const chaseElement = chaseDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(7) > ul');
             const resultElement = document.getElementById("result");
-      
+
             if (discoverElement && chaseElement) {
               highlightCurrentMonth(discoverElement);
               highlightCurrentMonth(chaseElement);
-      
+
               const Chase = `
                 <ul>
-                  <li>5% on Travel</li>
-                  <li>3% on Dining and Delivery</li>
+                  <li><b>5%</b> on Travel</li>
+                  <li><b>3%</b> on Dining and Delivery</li>
                 </ul>
               `;
               const Apple = `
                 <ul>
-                  <li>3% on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats</li>
-                  <li>2% on Apple Pay</li>
+                  <li><b>3%</b> on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats, Booking.com, T-Mobile</li>
+                  <li><b>2%</b> on Apple Pay</li>
+                </ul>
+              `;
+              const USbank = `
+                <ul>
+                  <li><b>5%</b> on Fast Food / Utilities / Internet / Department Stores / Cell Phone / Electronic Stores / Movie Theaters / Ground Transportation</li>
+                  <li><b>2%</b> on Grocery / Restaurant / Gas</li>
                 </ul>
               `;
               const BOA = `
                 <ul>
-                  <li>3% on Amazon</li>
-                  <li>2% on Grocery and Wholesale Clubs</li>
+                  <li><b>3%</b> on Restaurant / Gas / Online / Travel / Drug Stores / Home Improvement</li>
+                  <li><b>2%</b> on Grocery and Wholesale Clubs</li>
                 </ul>
               `;
               const citi = `
                 <ul>
-                  <li>5% on Highest Category</li>
+                  <li><b>5%</b> on Restaurants / Grocery / Gas / Travel / Transit / Streaming Services / Drugstores / Home Improvement / Fitness Clubs / Live Entertainment</li>
                 </ul>
               `;
               const HEB = `
                 <ul>
-                  <li>1.5% on Everything</li>
+                  <li><b>1.5%</b> on Everything</li>
                 </ul>
               `;
               const WF = `
                 <ul>
-                  <li>2% on Everything</li>
+                  <li><b>2%</b> on Everything</li>
                 </ul>
               `;
-              const Bilt = `
+              const Paypal = `
                 <ul>
-                  <li>6% (3.3%|7.5%) on Dining</li>
-                  <li>4% (2.2%|5%) on Travel</li>
-                  <li>1% (0.55%|1.25%) on Rent</li>
-                  Points redeemed on (cashback|travel)
+                  <li><b>5%</b> on Restaurant / Grocery / Gas / Clothing / Health & Beauty</li>
                 </ul>
               `;
               resultElement.innerHTML = `
                 <hr>
-                <h2>Discover ($500/month)</h2>
+                <h2>Discover ($1500/quarter)</h2>
                 ${discoverElement.outerHTML}
                 <hr>
-                <h2>Chase ($500/month)</h2>
+                <h2>Chase ($1500/quarter)</h2>
                 ${chaseElement.outerHTML}
                 ${Chase}
-                <hr>
-                <h2>Apple (Unlimited)</h2>
-                ${Apple}
-                <hr>
-                <h2>Bank of America ($833/month)</h2>
-                ${BOA}
                 <hr>
                 <h2>Citi Bank ($500/month)</h2>
                 ${citi}
                 <hr>
-                <h2>HEB (Unlimited)</h2>
-                ${HEB}
+                <h2>Paypal ($1000/month)</h2>
+                ${Paypal}
+                <hr>
+                <h2>US Bank ($2000/quarter)</h2>
+                ${USbank}
+                <hr>
+                <h2>Bank of America ($833/month)</h2>
+                ${BOA}
+                <hr>
+                <h2>Apple (Unlimited)</h2>
+                ${Apple}
                 <hr>
                 <h2>Wells Fargo (Unlimited)</h2>
                 ${WF}
                 <hr>
-                <h2>Bilt ($550|$1250/$year)</h2>
-                ${Bilt}
               `;
             } else {
               resultElement.textContent = "Elements not found.";
@@ -116,12 +120,12 @@
             document.getElementById("result").textContent = "Error fetching the webpages: " + error;
           });
       });
-      
+
       function highlightCurrentMonth(element) {
         const currentDate = new Date();
         const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
         const listItems = element.getElementsByTagName("li");
-      
+
         for (let i = 0; i < listItems.length; i++) {
           const listItem = listItems[i];
           const listItemText = listItem.textContent || listItem.innerText;
@@ -147,12 +151,12 @@
           }
         }
       }
-      
     </script>
   </head>
   <body>
     <h1>Cashback Dashboard</h1>
-    <div id="result">            
+    <div id="result">
+      <!-- Content will be dynamically inserted here -->
     </div>
   </body>
 </html>
