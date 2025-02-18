@@ -1,6 +1,7 @@
-<html>
-  <head>
-    <title>Cashback Dashboard</title>
+
+    <html>
+        <body>
+            
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -21,142 +22,78 @@
         background-color: yellow;
       }
     </style>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        Promise.all([
-          fetch("https://www.cnbc.com/select/discover-cash-back-calendar/").then(response => response.text()),
-          fetch("https://www.cnbc.com/select/chase-freedom-cash-back-calendar/").then(response => response.text())
-        ])
-          .then(([discoverData, chaseData]) => {
 
-            const parser = new DOMParser();
-            const discoverDoc = parser.parseFromString(discoverData, "text/html");
-            const chaseDoc = parser.parseFromString(chaseData, "text/html");
-            const discoverElement = discoverDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(10) > ul');
-            const chaseElement = chaseDoc.querySelector('#SelectRegularArticle-ArticleBody-6 > div:nth-child(7) > ul');
-            const resultElement = document.getElementById("result");
-
-            if (discoverElement && chaseElement) {
-              highlightCurrentMonth(discoverElement);
-              highlightCurrentMonth(chaseElement);
-
-              const Chase = `
-                <ul>
-                  <li><b>5%</b> on Travel</li>
-                  <li><b>3%</b> on Dining and Delivery</li>
-                </ul>
-              `;
-              const Apple = `
-                <ul>
-                  <li><b>3%</b> on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats, Booking.com, T-Mobile</li>
-                  <li><b>2%</b> on Apple Pay</li>
-                </ul>
-              `;
-              const USbank = `
-                <ul>
-                  <li><b>5%</b> on Fast Food / Utilities / Internet / Department Stores / Cell Phone / Electronic Stores / Movie Theaters / Ground Transportation</li>
-                  <li><b>2%</b> on Grocery / Restaurant / Gas</li>
-                </ul>
-              `;
-              const BOA = `
-                <ul>
-                  <li><b>3%</b> on Restaurant / Gas / Online / Travel / Drug Stores / Home Improvement</li>
-                  <li><b>2%</b> on Grocery and Wholesale Clubs</li>
-                </ul>
-              `;
-              const citi = `
-                <ul>
-                  <li><b>5%</b> on Restaurants / Grocery / Gas / Travel / Transit / Streaming Services / Drugstores / Home Improvement / Fitness Clubs / Live Entertainment</li>
-                </ul>
-              `;
-              const HEB = `
-                <ul>
-                  <li><b>1.5%</b> on Everything</li>
-                </ul>
-              `;
-              const WF = `
-                <ul>
-                  <li><b>2%</b> on Everything</li>
-                </ul>
-              `;
-              const Paypal = `
-                <ul>
-                  <li><b>5%</b> on Restaurant / Grocery / Gas / Clothing / Health & Beauty</li>
-                </ul>
-              `;
-              resultElement.innerHTML = `
-                <hr>
-                <h2>Discover ($1500/quarter)</h2>
-                ${discoverElement.outerHTML}
-                <hr>
-                <h2>Chase ($1500/quarter)</h2>
-                ${chaseElement.outerHTML}
-                ${Chase}
-                <hr>
-                <h2>Citi Bank ($500/month)</h2>
-                ${citi}
-                <hr>
-                <h2>Paypal ($1000/month)</h2>
-                ${Paypal}
-                <hr>
-                <h2>US Bank ($2000/quarter)</h2>
-                ${USbank}
-                <hr>
-                <h2>Bank of America ($833/month)</h2>
-                ${BOA}
-                <hr>
-                <h2>Apple (Unlimited)</h2>
-                ${Apple}
-                <hr>
-                <h2>Wells Fargo (Unlimited)</h2>
-                ${WF}
-                <hr>
-              `;
-            } else {
-              resultElement.textContent = "Elements not found.";
-            }
-          })
-          .catch(error => {
-            document.getElementById("result").textContent = "Error fetching the webpages: " + error;
-          });
-      });
-
-      function highlightCurrentMonth(element) {
-        const currentDate = new Date();
-        const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-        const listItems = element.getElementsByTagName("li");
-
-        for (let i = 0; i < listItems.length; i++) {
-          const listItem = listItems[i];
-          const listItemText = listItem.textContent || listItem.innerText;
-          if (listItemText.includes("January")) {
-            if ((currentMonth == "January") || (currentMonth == "February") || (currentMonth == "March")) {
-              listItem.classList.add("highlight");
-            }
-          }
-          if (listItemText.includes("April")) {
-            if ((currentMonth == "April") || (currentMonth == "May") || (currentMonth == "June")) {
-              listItem.classList.add("highlight");
-            }
-          }
-          if (listItemText.includes("July")) {
-            if ((currentMonth == "July") || (currentMonth == "August") || (currentMonth == "September")) {
-              listItem.classList.add("highlight");
-            }
-          }
-          if (listItemText.includes("October")) {
-            if ((currentMonth == "October") || (currentMonth == "November") || (currentMonth == "December")) {
-              listItem.classList.add("highlight");
-            }
-          }
-        }
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Cashback Dashboard</h1>
-    <div id="result">
-      <!-- Content will be dynamically inserted here -->
-    </div>
-  </body>
-</html>
+            <h1>Cashback Dashboard</h1><hr>
+            <h2>Discover ($1500/quarter)</h2><ul><li><b>5 Pts</b> on Restaurants</li><li><b>5 Pts</b> on Home improvement stores</li><li><b>5 Pts</b> on Select streaming services</li></ul><hr>
+            <h2>Chase ($1500/quarter)</h2><ul><li><b>5 Pts</b> on Grocery stores</li><li><b>5 Pts</b> on Fitness clubs</li><li><b>5 Pts</b> on Hair, nails and spa services</li><li><b>5 Pts</b> on Norwegian Cruise Line</li></ul>
+            
+    <ul>
+        <b>Chase Freedom Flex (0.01/point)</b>:
+        <li><b>5 Pts</b> on Travel</li>
+        <li><b>3 Pts</b> on Dining and Delivery</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>Citi Bank ($500/month)</h2>
+    <ul>
+        <b>Citi Custom Cash ($0.01/point)</b>:
+        <li><b>5 Pts</b> on Restaurants / Grocery / Gas / Travel / Transit / Streaming / Drugstores / Home Improvement / Fitness Clubs / Live Entertainment</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>Paypal ($1000/month)</h2>
+    <ul>
+        <b>Paypal Debit ($0.01/point)</b>:
+        <li><b>5 Pts</b> on Restaurant / Grocery / Gas / Clothing / Health & Beauty</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>US Bank ($2000/quarter)</h2>
+    <ul>
+        <b>US Bank Cash+ (0.01/point)</b>:
+        <li><b>5 Pts</b> on Fast Food / Utilities / Internet / Department Stores / Cell Phone / Electronic Stores / Movie Theaters / Ground Transportation</li>
+        <li><b>2 Pts</b> on Grocery / Restaurant / Gas</li>
+        <br>
+        <b>US Bank Altitude Connect ($0.008/point)</b>:
+        <li><b>5 Pts</b> on Travel </li>
+        <li><b>4 Pts</b> on Gas ($1000/quarter)</li>
+        <li><b>2 Pts</b> on Grocery / Dining / Streaming</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>Bank of America ($833/month)</h2>
+    <ul>
+        <b>BOA Customized Cash ($0.01/point)</b>:
+        <li><b>3 Pts</b> on Restaurant / Gas / Online / Travel / Drug Stores / Home Improvement</li>
+        <li><b>2 Pts</b> on Grocery and Wholesale Clubs</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>Apple (Unlimited)</h2>
+    <ul>
+        <b>Apple Card (0.01/point)</b>:
+        <li><b>3 Pts</b> on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats, Booking.com, T-Mobile</li>
+        <li><b>2 Pts</b> on Apple Pay</li>
+    </ul>
+    <hr>
+    
+            
+    <h2>Wells Fargo (Unlimited)</h2>
+    <ul>
+        <b>One Key ($1/point)</b>:
+        <li><b>3 Pts</b> on Expedia / Hotels.com / Vrbo</li>
+        <li><b>3 Pts</b> on Dining / Grocery / Gas / Food Delivery</li>
+        <br>
+        <b>Wells Fargo Active Cash ($0.01/point)</b>:
+        <li><b>2 Pts</b> on Everything</li>
+    </ul>
+    <hr>
+    
+        </body>
+    </html>
+    
