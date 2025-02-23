@@ -5,6 +5,25 @@
     <style>
       body {
         font-family: Arial, sans-serif;
+        position: relative;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        background-image: url('money.jpeg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        opacity: 0.5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
       }
       h1 {
         font-size: 30px;
@@ -23,21 +42,23 @@
       }
     </style>
 
-            <h1>Cashback Dashboard</h1><hr>
-            <h2>Discover ($1500/quarter)</h2><ul><li><b>5 Pts</b> on Restaurants</li><li><b>5 Pts</b> on Home improvement stores</li><li><b>5 Pts</b> on Select streaming services</li></ul><hr>
-            <h2>Chase ($1500/quarter)</h2><ul><li><b>5 Pts</b> on Grocery stores</li><li><b>5 Pts</b> on Fitness clubs</li><li><b>5 Pts</b> on Hair, nails and spa services</li><li><b>5 Pts</b> on Norwegian Cruise Line</li></ul>
             
-    <ul>
-        <b>Chase Freedom Flex (0.01/point)</b>:
-        <li><b>5 Pts</b> on Travel</li>
-        <li><b>3 Pts</b> on Dining and Delivery</li>
-    </ul>
-    <hr>
-    
+    <h1>DuoKey's Cashback Dashboard</h1><hr>
+
+            
+        <h2>Discover ($1500/quarter)</h2>
+            <ul>
+                <b class="highlight">Discover it (0.01/point)</b>
+    <li><b>5 Pts</b> on Restaurants</li><li><b>5 Pts</b> on Home improvement stores</li><li><b>5 Pts</b> on Select streaming services</li></ul><hr>
+            
+        <h2>Chase ($1500/quarter)</h2>
+            <ul>
+                <b class="highlight">Chase Freedom Flex (0.01/point)</b>
+    <li><b>5 Pts</b> on Grocery stores</li><li><b>5 Pts</b> on Fitness clubs</li><li><b>5 Pts</b> on Hair, nails and spa services</li><li><b>5 Pts</b> on Norwegian Cruise Line</li><li><b>5 Pts</b> on March only: Tax preparation and insurance</li><li><b>5 Pts</b> on Travel</li><li><b>3 Pts</b> on Dining and Delivery</li></ul><hr>
             
     <h2>Citi Bank ($500/month)</h2>
     <ul>
-        <b>Citi Custom Cash ($0.01/point)</b>:
+        <b class="highlight">Citi Custom Cash ($0.01/point)</b>
         <li><b>5 Pts</b> on Restaurants / Grocery / Gas / Travel / Transit / Streaming / Drugstores / Home Improvement / Fitness Clubs / Live Entertainment</li>
     </ul>
     <hr>
@@ -45,7 +66,7 @@
             
     <h2>Paypal ($1000/month)</h2>
     <ul>
-        <b>Paypal Debit ($0.01/point)</b>:
+        <b class="highlight">Paypal Debit ($0.01/point)</b>
         <li><b>5 Pts</b> on Restaurant / Grocery / Gas / Clothing / Health & Beauty</li>
     </ul>
     <hr>
@@ -53,11 +74,11 @@
             
     <h2>US Bank ($2000/quarter)</h2>
     <ul>
-        <b>US Bank Cash+ (0.01/point)</b>:
+        <b class="highlight">US Bank Cash+ (0.01/point)</b>
         <li><b>5 Pts</b> on Fast Food / Utilities / Internet / Department Stores / Cell Phone / Electronic Stores / Movie Theaters / Ground Transportation</li>
         <li><b>2 Pts</b> on Grocery / Restaurant / Gas</li>
         <br>
-        <b>US Bank Altitude Connect ($0.008/point)</b>:
+        <b class="highlight">US Bank Altitude Connect ($0.008/point)</b>
         <li><b>5 Pts</b> on Travel </li>
         <li><b>4 Pts</b> on Gas ($1000/quarter)</li>
         <li><b>2 Pts</b> on Grocery / Dining / Streaming</li>
@@ -67,7 +88,7 @@
             
     <h2>Bank of America ($833/month)</h2>
     <ul>
-        <b>BOA Customized Cash ($0.01/point)</b>:
+        <b class="highlight">BOA Customized Cash ($0.01/point)</b>:
         <li><b>3 Pts</b> on Restaurant / Gas / Online / Travel / Drug Stores / Home Improvement</li>
         <li><b>2 Pts</b> on Grocery and Wholesale Clubs</li>
     </ul>
@@ -76,7 +97,7 @@
             
     <h2>Apple (Unlimited)</h2>
     <ul>
-        <b>Apple Card (0.01/point)</b>:
+        <b class="highlight">Apple Card (0.01/point)</b>
         <li><b>3 Pts</b> on Apple, Nike, Uber, Panera, ExxonMobil, Walgreens, Uber Eats, Booking.com, T-Mobile</li>
         <li><b>2 Pts</b> on Apple Pay</li>
     </ul>
@@ -85,11 +106,11 @@
             
     <h2>Wells Fargo (Unlimited)</h2>
     <ul>
-        <b>One Key ($1/point)</b>:
+        <b class="highlight">One Key ($0.01/point)</b>
         <li><b>3 Pts</b> on Expedia / Hotels.com / Vrbo</li>
         <li><b>3 Pts</b> on Dining / Grocery / Gas / Food Delivery</li>
         <br>
-        <b>Wells Fargo Active Cash ($0.01/point)</b>:
+        <b class="highlight">Wells Fargo Active Cash ($0.01/point)</b>
         <li><b>2 Pts</b> on Everything</li>
     </ul>
     <hr>
