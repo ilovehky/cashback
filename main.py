@@ -61,29 +61,28 @@ chase_soup = BeautifulSoup(chase_response.text, 'html.parser')
 
 # Get the current month
 current_month = datetime.now().strftime('%B')
-
 # Check if web elements are found
 try:
     if current_month in ["January", "February", "March"]:
         discover_element = discover_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div > div > ul')
         chase_element = chase_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)')
     elif current_month in ["April", "May", "June"]:
         discover_element = discover_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > div > div > ul')
         chase_element = chase_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2)')
     elif current_month in ["July", "August", "September"]:
         discover_element = discover_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > div > div > ul')
         chase_element = chase_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2)')
     elif current_month in ["October", "November", "December"]:
         discover_element = discover_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(7) > div > div > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > div > ul')
         chase_element = chase_soup.select_one(
-            '#react-root > div > div > div > div > div.BgIPML > div._3Oxhw4._1p_Xo-._1voSX6._3VAeaP.oE4ByK._2nwJWz._3WHk4h > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div:nth-child(4) > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > div > ul')
+            '#react-root > div > div > div > div > div.BgIPML > div:nth-child(3) > div > div._2-kWs- > div > div._2Ru-tk._11Xx7n > div > div > div > main > div._2_Pyfm._1gun6R > div > div:nth-child(12) > div > div > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2)')
     discover_list = []
     discover_info = """
         <h2>Discover ($1500/quarter)</h2>
@@ -191,4 +190,10 @@ try:
         print(result_html, file=test)
 except Exception as e:
     print("Error:")
-    print(e)
+    # print line number and error message
+    import traceback
+    tb = traceback.extract_tb(e.__traceback__)
+    last_call = tb[-1]
+    filename, line, func, text = last_call
+    print(f"Error occurred on line {line}, function {func}, text {text}")
+    exit(1)
