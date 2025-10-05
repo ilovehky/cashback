@@ -59,29 +59,102 @@ chase_response = requests.get(chase_url)
 discover_soup = BeautifulSoup(discover_response.text, 'html.parser')
 chase_soup = BeautifulSoup(chase_response.text, 'html.parser')
 
-# Get the current month
-current_month = datetime.now().strftime('%B')
-# Check if web elements are found
-if current_month in ["January", "February", "March"]:
-    discover_element = discover_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(7) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div > ul')
-    chase_element = chase_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(12) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div > ul')
-elif current_month in ["April", "May", "June"]:
-    discover_element = discover_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(7) > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > div > ul')
-    chase_element = chase_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(12) > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > div > ul')
-elif current_month in ["July", "August", "September"]:
-    discover_element = discover_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(7) > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > div > ul')
-    chase_element = chase_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(12) > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > div > ul')
-elif current_month in ["October", "November", "December"]:
-    discover_element = discover_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(7) > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > ul')
-    chase_element = chase_soup.select_one(
-        'body > main > div.mx-auto.max-w-screen-xl.px-4.md\:px-16 > div.grid.grid-cols-12.flex-start.gap-4.lg\:gap-6 > div.col-span-12.md\:col-span-8 > div.mb-11.sm\:mb-\[var\(--margin-5-small\)\].xl\:mb-16 > div:nth-child(12) > div > div > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > ul')
+# --- New: find a table in discover_response that contains the text "Chase Freedom" ---
+chase_table = None
+for table in discover_soup.find_all('table'):
+    try:
+        text = table.get_text(separator=' ', strip=True).lower()
+    except Exception:
+        # skip any table that can't be converted to text
+        continue
+    if 'chase freedom' in text:
+        chase_table = table
+        break
+
+if chase_table is not None:
+    # --- Parse chase_table for the current quarter (Q1/Q2/Q3/Q4) and extract items ---
+    month = datetime.now().month
+    if month in (1, 2, 3):
+        quarter_label = 'q1'
+    elif month in (4, 5, 6):
+        quarter_label = 'q2'
+    elif month in (7, 8, 9):
+        quarter_label = 'q3'
+    else:
+        quarter_label = 'q4'
+
+    quarter_row = None
+    for tr in chase_table.find_all('tr'):
+        first_cell = tr.find(['th', 'td'])
+        if not first_cell:
+            continue
+        first_text = first_cell.get_text(separator=' ', strip=True).lower()
+        # look for the quarter label or month hints in the first cell
+        if quarter_label in first_text:
+            quarter_row = tr
+            break
+    chase_items = []
+    if quarter_row is not None:
+        cells = quarter_row.find_all(['td', 'th'])
+        target_cell = cells[1] if len(cells) >= 2 else quarter_row
+        for li in target_cell.find_all('li'):
+            chase_items.append(li.get_text(strip=True).rstrip('.'))
+        if not chase_items:
+            raw = target_cell.get_text(separator='|', strip=True)
+            parts = [p.strip() for p in raw.split('|') if p.strip()]
+            chase_items = parts
+    else:
+        print(f"No {quarter_label.upper()} row found in chase_table; will fall back to CSS selector if available")
+else:
+    print("No table containing 'Chase Freedom' found in discover_response")
+
+# --- New: find a table in discover_response that contains the text "Discover" or "Discover it" ---
+discover_table = None
+for table in discover_soup.find_all('table'):
+    try:
+        text = table.get_text(separator=' ', strip=True).lower()
+    except Exception:
+        continue
+    if 'discover it' in text or 'discover (' in text or ("discover" in text and "it" in text):
+        discover_table = table
+        break
+
+if discover_table is not None:
+    # parse the current quarter from the discover_table
+    month = datetime.now().month
+    if month in (1, 2, 3):
+        qlabel = 'q1'
+    elif month in (4, 5, 6):
+        qlabel = 'q2'
+    elif month in (7, 8, 9):
+        qlabel = 'q3'
+    else:
+        qlabel = 'q4'
+
+    dquarter_row = None
+    for tr in discover_table.find_all('tr'):
+        first_cell = tr.find(['th', 'td'])
+        if not first_cell:
+            continue
+        first_text = first_cell.get_text(separator=' ', strip=True).lower()
+        if qlabel in first_text:
+            dquarter_row = tr
+            break
+
+    discover_items = []
+    if dquarter_row is not None:
+        cells = dquarter_row.find_all(['td', 'th'])
+        target_cell = cells[1] if len(cells) >= 2 else dquarter_row
+        for li in target_cell.find_all('li'):
+            discover_items.append(li.get_text(strip=True).rstrip('.'))
+        if not discover_items:
+            raw = target_cell.get_text(separator='|', strip=True)
+            discover_items = [p.strip() for p in raw.split('|') if p.strip()]
+    else:
+        print(f"No {qlabel.upper()} row found in discover_table; will fall back to CSS selector if available")
+else:
+    print("No table containing 'Discover' found in discover_response")
+
 
 discover_list = []
 discover_info = """
@@ -89,9 +162,11 @@ discover_info = """
         <ul>
             <b class=\"highlight\">Discover it ($0.01/point)</b>
 """
-for li in discover_element.find_all('li'):
-    discover_list.append(li)
-    discover_info += "<li><b>5 Pts</b> on " + li.get_text().strip(".") + "</li>"
+discover_list = []
+# prefer table-parsed discover_items when available
+if discover_items:
+    for item in discover_items:
+        discover_info += "<li><b>5 Pts</b> on " + item + "</li>"
 discover_info += "</ul><hr>"
 
 freedom_flex_info = """
@@ -100,9 +175,9 @@ freedom_flex_info = """
             <b class=\"highlight\">Chase Freedom Flex ($0.01/point)</b>
 """
 chase_list = []
-for li in chase_element.find_all('li'):
-    chase_list.append(li)
-    freedom_flex_info += "<li><b>5 Pts</b> on " + li.get_text().strip(".") + "</li>"
+if chase_items:
+    for item in chase_items:
+        freedom_flex_info += "<li><b>5 Pts</b> on " + item + "</li>"
 freedom_flex_info += "<li><b>5 Pts</b> on Travel</li><li><b>3 Pts</b> on Dining and Delivery</li></ul><hr>"
 
 # Create additional cashback information
