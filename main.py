@@ -1,6 +1,6 @@
-import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from playwright.sync_api import sync_playwright
 
 style_tag = """
     <style>
@@ -47,126 +47,75 @@ style_tag = """
 title_tag = """
     <h1>DuoKey's Cashback Dashboard</h1><hr>
 """
-# Fetch the webpage content
-discover_url = "https://www.nerdwallet.com/article/credit-cards/current-credit-card-bonus-categories?msockid=31cc168329216769183b0310280466f6"
-chase_url = "https://www.nerdwallet.com/article/credit-cards/current-credit-card-bonus-categories?msockid=31cc168329216769183b0310280466f6"
+# Source page (rendered in a headless browser because NerdWallet blocks plain
+# HTTP requests and loads its tables with JavaScript).
+source_url = "https://www.nerdwallet.com/article/credit-cards/current-credit-card-bonus-categories"
 
-# Request the pages
-discover_response = requests.get(discover_url)
-chase_response = requests.get(chase_url)
+# Current quarter label, e.g. "q3". Derived from today's date so the dashboard
+# always shows the active quarter without any manual updates.
+current_quarter = 'q' + str((datetime.now().month - 1) // 3 + 1)
 
-# Parse the HTML content
-discover_soup = BeautifulSoup(discover_response.text, 'html.parser')
-chase_soup = BeautifulSoup(chase_response.text, 'html.parser')
 
-# --- New: find a table in discover_response that contains the text "Chase Freedom" ---
-chase_table = None
-for table in discover_soup.find_all('table'):
-    try:
-        text = table.get_text(separator=' ', strip=True).lower()
-    except Exception:
-        # skip any table that can't be converted to text
-        continue
-    if 'chase freedom' in text:
-        chase_table = table
-        break
+def fetch_rendered_html(url):
+    """Load the page in headless Chromium and return the fully rendered HTML."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+        )
+        page.goto(url, wait_until="domcontentloaded", timeout=45000)
+        page.wait_for_timeout(2500)  # let client-side tables render
+        html = page.content()
+        browser.close()
+    return html
 
-if chase_table is not None:
-    # --- Parse chase_table for the current quarter (Q1/Q2/Q3/Q4) and extract items ---
-    month = datetime.now().month
-    if month in (1, 2, 3):
-        quarter_label = 'q1'
-    elif month in (4, 5, 6):
-        quarter_label = 'q2'
-    elif month in (7, 8, 9):
-        quarter_label = 'q3'
-    else:
-        quarter_label = 'q4'
 
-    quarter_row = None
-    for tr in chase_table.find_all('tr'):
-        first_cell = tr.find(['th', 'td'])
-        if not first_cell:
+def extract_quarter_items(soup, card_keyword, quarter_label):
+    """Return the bonus categories for the given card and quarter from the page.
+
+    Finds the table mentioning ``card_keyword`` (e.g. "chase freedom" or
+    "discover"), locates the row for ``quarter_label`` (e.g. "q3") and splits the
+    category cell into individual items.
+    """
+    for table in soup.find_all('table'):
+        table_text = table.get_text(separator=' ', strip=True).lower()
+        if card_keyword not in table_text:
             continue
-        first_text = first_cell.get_text(separator=' ', strip=True).lower()
-        # look for the quarter label or month hints in the first cell
-        if quarter_label in first_text:
-            quarter_row = tr
-            break
-    chase_items = []
-    if quarter_row is not None:
-        cells = quarter_row.find_all(['td', 'th'])
-        target_cell = cells[1] if len(cells) >= 2 else quarter_row
-        for li in target_cell.find_all('li'):
-            chase_items.append(li.get_text(strip=True).rstrip('.'))
-        if not chase_items:
-            raw = target_cell.get_text(separator='|', strip=True)
-            parts = [p.strip() for p in raw.split('|') if p.strip()]
-            chase_items = parts
-    else:
-        print(f"No {quarter_label.upper()} row found in chase_table; will fall back to CSS selector if available")
-else:
-    print("No table containing 'Chase Freedom' found in discover_response")
-
-# --- New: find a table in discover_response that contains the text "Discover" or "Discover it" ---
-discover_table = None
-for table in discover_soup.find_all('table'):
-    try:
-        text = table.get_text(separator=' ', strip=True).lower()
-    except Exception:
-        continue
-    if 'discover it' in text or 'discover (' in text or ("discover" in text and "it" in text):
-        discover_table = table
-        break
-
-if discover_table is not None:
-    # parse the current quarter from the discover_table
-    month = datetime.now().month
-    if month in (1, 2, 3):
-        qlabel = 'q1'
-    elif month in (4, 5, 6):
-        qlabel = 'q2'
-    elif month in (7, 8, 9):
-        qlabel = 'q3'
-    else:
-        qlabel = 'q4'
-
-    dquarter_row = None
-    for tr in discover_table.find_all('tr'):
-        first_cell = tr.find(['th', 'td'])
-        if not first_cell:
-            continue
-        first_text = first_cell.get_text(separator=' ', strip=True).lower()
-        if qlabel in first_text:
-            dquarter_row = tr
-            break
-
-    discover_items = []
-    if dquarter_row is not None:
-        cells = dquarter_row.find_all(['td', 'th'])
-        target_cell = cells[1] if len(cells) >= 2 else dquarter_row
-        for li in target_cell.find_all('li'):
-            discover_items.append(li.get_text(strip=True).rstrip('.'))
-        if not discover_items:
-            raw = target_cell.get_text(separator='|', strip=True)
-            discover_items = [p.strip() for p in raw.split('|') if p.strip()]
-    else:
-        print(f"No {qlabel.upper()} row found in discover_table; will fall back to CSS selector if available")
-else:
-    print("No table containing 'Discover' found in discover_response")
+        for tr in table.find_all('tr'):
+            cells = tr.find_all(['td', 'th'])
+            if not cells:
+                continue
+            if quarter_label not in cells[0].get_text(separator=' ', strip=True).lower():
+                continue
+            category_cell = cells[1] if len(cells) >= 2 else cells[0]
+            items = [li.get_text(strip=True).rstrip('.')
+                     for li in category_cell.find_all('li')]
+            if not items:
+                raw = category_cell.get_text(separator='.', strip=True)
+                items = [part.strip().rstrip('.') for part in raw.split('.') if part.strip()]
+            return items
+    return []
 
 
-discover_list = []
+rendered_html = fetch_rendered_html(source_url)
+soup = BeautifulSoup(rendered_html, 'html.parser')
+
+discover_items = extract_quarter_items(soup, 'discover', current_quarter)
+chase_items = extract_quarter_items(soup, 'chase freedom', current_quarter)
+
+if not discover_items:
+    raise RuntimeError("Could not extract Discover bonus categories from source page")
+if not chase_items:
+    raise RuntimeError("Could not extract Chase Freedom bonus categories from source page")
+
 discover_info = """
     <h2>Discover ($1500/quarter)</h2>
         <ul>
             <b class=\"highlight\">Discover it ($0.01/point)</b>
 """
-discover_list = []
-# prefer table-parsed discover_items when available
-if discover_items:
-    for item in discover_items:
-        discover_info += "<li><b>5 Pts</b> on " + item + "</li>"
+for item in discover_items:
+    discover_info += "<li><b>5 Pts</b> on " + item + "</li>"
 discover_info += "</ul><hr>"
 
 freedom_flex_info = """
@@ -174,10 +123,8 @@ freedom_flex_info = """
         <ul>
             <b class=\"highlight\">Chase Freedom Flex ($0.01/point)</b>
 """
-chase_list = []
-if chase_items:
-    for item in chase_items:
-        freedom_flex_info += "<li><b>5 Pts</b> on " + item + "</li>"
+for item in chase_items:
+    freedom_flex_info += "<li><b>5 Pts</b> on " + item + "</li>"
 freedom_flex_info += "<li><b>5 Pts</b> on Travel</li><li><b>3 Pts</b> on Dining and Delivery</li></ul><hr>"
 
 # Create additional cashback information
